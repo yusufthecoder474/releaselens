@@ -29,6 +29,9 @@ button.secondary { background: #eee; color: #222; }
 <option value="">— choose a sample —</option>
 {% for s in samples %}<option value="{{ s }}">{{ s }}</option>{% endfor %}
 </select>
+<label for="changed_files">Changed files (optional)</label>
+<textarea id="changed_files" name="changed_files" rows="3" placeholder="src/checkout.py, src/cart.py (one per line or comma-separated)"></textarea>
+<p class="muted">If you list the files you changed, the report adds a deterministic “tests to run first” ranking: name overlap with those files, recent failure rate, and flaky status. No LLM is used for the ranking.</p>
 <div>
 <button type="submit">Get the report</button>
 </div>

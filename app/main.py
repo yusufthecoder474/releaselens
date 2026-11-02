@@ -19,8 +19,10 @@ from fastapi.templating import Jinja2Templates
 from .agent.graph import run_pipeline
 from .config import samples_dir
 from .db import Run, get_session, init_db
-from .flaky import test_history
+from .flaky import failure_rates, flaky_tests, test_history
+from .parser import parse_junit_xml
 from .seed import seed_historical_runs
+from .selection import parse_changed_files, rank_tests
 
 TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
@@ -37,8 +39,14 @@ def _sample_xml(name: str) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def _analyze(file: UploadFile | None, sample: str | None) -> dict:
-    """Shared input handling for /report and /api/analyze."""
+def _analyze(file: UploadFile | None, sample: str | None,
+             changed_files_raw: str | None = None) -> dict:
+    """Shared input handling for /report and /api/analyze.
+
+    When changed file paths are supplied, a deterministic
+    "tests to run first" ranking (selection.py, no LLM) is attached as
+    report["tests_to_run_first"]; otherwise that list is empty.
+    """
     if sample:
         xml_text = _sample_xml(sample)
         source = f"sample:{sample}"
@@ -52,7 +60,17 @@ def _analyze(file: UploadFile | None, sample: str | None) -> dict:
     try:
         init_db()
         seed_historical_runs(session)
-        return run_pipeline(xml_text, source=source, session=session)
+        report = run_pipeline(xml_text, source=source, session=session)
+        changed_files = parse_changed_files(changed_files_raw)
+        report["changed_files"] = changed_files
+        if changed_files:
+            test_names = [t.name for t in parse_junit_xml(xml_text).tests]
+            rates = failure_rates(session, test_names)
+            report["tests_to_run_first"] = rank_tests(
+                test_names, changed_files, rates, set(flaky_tests(session)))
+        else:
+            report["tests_to_run_first"] = []
+        return report
     finally:
         session.close()
 
@@ -64,9 +82,10 @@ def index(request: Request):
 
 @app.post("/report", response_class=HTMLResponse)
 async def report_page(request: Request, file: UploadFile | None = File(default=None),
-                      sample: str | None = Form(default=None)):
+                      sample: str | None = Form(default=None),
+                      changed_files: str | None = Form(default=None)):
     try:
-        report = _analyze(file, sample)
+        report = _analyze(file, sample, changed_files)
     except ValueError as exc:
         return templates.TemplateResponse(request, "index.html",
                                           {"samples": SAMPLES, "error": str(exc)},
@@ -76,9 +95,10 @@ async def report_page(request: Request, file: UploadFile | None = File(default=N
 
 @app.post("/api/analyze")
 async def analyze_api(file: UploadFile | None = File(default=None),
-                      sample: str | None = Form(default=None)):
+                      sample: str | None = Form(default=None),
+                      changed_files: str | None = Form(default=None)):
     try:
-        report = _analyze(file, sample)
+        report = _analyze(file, sample, changed_files)
     except ValueError as exc:
         return JSONResponse({"error": str(exc)}, status_code=400)
     return report

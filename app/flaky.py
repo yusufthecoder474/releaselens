@@ -71,6 +71,31 @@ def recheck_first(session, n: int = LAST_N_RUNS, limit: int = 10) -> list[dict]:
     return out
 
 
+def failure_rates(session, test_names: list[str], n: int = LAST_N_RUNS) -> dict[str, float]:
+    """Recent failure rate per test over the last n runs.
+
+    Returns 0.0 for tests with no history in the window. Used by the
+    deterministic "tests to run first" ranking (see selection.py).
+    """
+    run_ids = last_run_ids(session, n)
+    if not run_ids or not test_names:
+        return {name: 0.0 for name in test_names}
+    appearances_expr = func.count(TestResult.id)
+    failures_expr = func.sum(case((TestResult.status == "failed", 1), else_=0))
+    rows = (
+        session.query(TestResult.test_name,
+                      appearances_expr.label("appearances"),
+                      failures_expr.label("failures"))
+        .filter(TestResult.run_id.in_(run_ids), TestResult.test_name.in_(test_names))
+        .group_by(TestResult.test_name)
+        .all()
+    )
+    rates = {name: 0.0 for name in test_names}
+    for name, appearances_n, failures_n in rows:
+        rates[name] = round(failures_n / appearances_n, 3) if appearances_n else 0.0
+    return rates
+
+
 def test_history(session, test_name: str, n: int = LAST_N_RUNS) -> list[dict]:
     """Most recent results for one test, newest first."""
     run_ids = last_run_ids(session, n)

@@ -46,6 +46,16 @@ a { color: #1a5cff; }
 <p>No failures. Nothing to explain.</p>
 {% endif %}
 
+{% if report.tests_to_run_first %}
+<h2>Tests to run first (based on your changed files)</h2>
+<p class="muted">Changed files: {% for f in report.changed_files %}<code>{{ f }}</code>{% if not loop.last %}, {% endif %}{% endfor %}. Ranked by name overlap with those files, recent failure rate, and flaky status — a fixed heuristic, not an LLM judgement.</p>
+<ol>
+{% for t in report.tests_to_run_first %}
+<li><code>{{ t.test_name }}</code> — score {{ t.score }} (name overlap {{ t.overlap }}, recent failure rate {{ (t.failure_rate * 100) | round(1) }}%{% if t.flaky %}, flaky{% endif %})</li>
+{% endfor %}
+</ol>
+{% endif %}
+
 <h2>Tests to re-check first</h2>
 {% if report.recheck_first %}
 <ol>
