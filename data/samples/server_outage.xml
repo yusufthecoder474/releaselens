@@ -9,45 +9,45 @@
     <testcase classname="com.example.Tests" name="test_logout" time="0.5" />
     <testcase classname="com.example.Tests" name="test_product_list" time="0.5" />
     <testcase classname="com.example.Tests" name="test_order_history" time="0.5" />
-    <testcase classname="com.example.Tests" name="test_env_1" time="0.5">
-      <failure message="Connection refused: could not connect to database at db.internal:5432">psycopg2.OperationalError: connection to server at "db.internal" (10.0.2.15), port 5432 failed: Connection refused</failure>
+    <testcase classname="com.example.Tests" name="test_outage_1" time="0.5">
+      <failure message="Queue broker unreachable at queue.internal:5672">pika.exceptions.AMQPConnectionError: failed to connect to queue.internal:5672: Connection refused</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_env_2" time="0.5">
-      <failure message="503 Service Unavailable: backend service is down">503 Service Unavailable
-Service temporarily unavailable, maintenance window active</failure>
+    <testcase classname="com.example.Tests" name="test_outage_2" time="0.5">
+      <failure message="503 from auth service during deployment">503 Service Unavailable
+Auth service is being redeployed</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_env_3" time="0.5">
-      <failure message="Gateway Timeout: server did not respond within 30s (504)">504 Gateway Time-out
-nginx: upstream timed out (110: Connection timed out)</failure>
+    <testcase classname="com.example.Tests" name="test_outage_3" time="0.5">
+      <failure message="Gateway timed out talking to billing service (504)">504 Gateway Time-out
+nginx: upstream billing service timed out</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_env_4" time="0.5">
-      <failure message="DNS resolution failed: Name or service not known for api.internal">socket.gaierror: [Errno -2] Name or service not known</failure>
+    <testcase classname="com.example.Tests" name="test_outage_4" time="0.5">
+      <failure message="DNS lookup failed for cache.internal">socket.gaierror: [Errno -2] Name or service not known for cache.internal</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_env_5" time="0.5">
-      <failure message="Connection refused to api.internal:8080">requests.exceptions.ConnectionError: HTTPConnectionPool(host='api.internal', port=8080): Max retries exceeded: Connection refused</failure>
+    <testcase classname="com.example.Tests" name="test_outage_5" time="0.5">
+      <failure message="Connection refused to search.internal:9200">requests.exceptions.ConnectionError: HTTPConnectionPool(host='search.internal', port=9200): Connection refused</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_env_6" time="0.5">
-      <failure message="500 Internal Server Error from payment gateway">500 Internal Server Error
-Upstream payment service returned 500</failure>
+    <testcase classname="com.example.Tests" name="test_outage_6" time="0.5">
+      <failure message="500 from email delivery service">500 Internal Server Error
+Email service returned 500</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_env_7" time="0.5">
-      <failure message="ReadTimeout: HTTPSConnectionPool read timed out after 10s">requests.exceptions.ReadTimeout: HTTPSConnectionPool(host='partner.example.com', port=443): Read timed out. (read timeout=10)</failure>
+    <testcase classname="com.example.Tests" name="test_outage_7" time="0.5">
+      <failure message="Read timed out calling partner API after 15s">requests.exceptions.ReadTimeout: HTTPSConnectionPool(host='partner.example.com'): Read timed out. (read timeout=15)</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_env_8" time="0.5">
-      <failure message="502 Bad Gateway: search service returned invalid response">502 Bad Gateway
-nginx: upstream sent invalid header while reading response</failure>
+    <testcase classname="com.example.Tests" name="test_outage_8" time="0.5">
+      <failure message="502 from CDN edge node">502 Bad Gateway
+CDN edge returned an invalid response</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_env_9" time="0.5">
-      <failure message="Connection refused to redis cache at cache.internal:6379">redis.exceptions.ConnectionError: Error connecting to cache.internal:6379. Connection refused.</failure>
+    <testcase classname="com.example.Tests" name="test_outage_9" time="0.5">
+      <failure message="Session store refused connection at session.internal:11211">pymemcache.exceptions.MemcacheError: Error connecting to session.internal:11211. Connection refused.</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_env_10" time="0.5">
-      <failure message="503 Service Unavailable from notification service">503 Service Unavailable: notification service is down for maintenance</failure>
+    <testcase classname="com.example.Tests" name="test_outage_10" time="0.5">
+      <failure message="503 from SMS service">503 Service Unavailable: SMS service is down for maintenance</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_env_11" time="0.5">
-      <failure message="Query timeout: database query exceeded 30s limit">psycopg2.errors.QueryCanceled: canceling statement due to statement timeout</failure>
+    <testcase classname="com.example.Tests" name="test_outage_11" time="0.5">
+      <failure message="Report query canceled after 45s by statement timeout">psycopg2.errors.QueryCanceled: report query canceled after 45 seconds by statement timeout</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_env_12" time="0.5">
-      <failure message="Temporary failure in name resolution for db.internal">psycopg2.OperationalError: could not translate host name "db.internal" to address: Temporary failure in name resolution</failure>
+    <testcase classname="com.example.Tests" name="test_outage_12" time="0.5">
+      <failure message="Temporary DNS failure for queue.internal">socket.gaierror: could not resolve host name "queue.internal": Temporary failure in name resolution</failure>
     </testcase>
   </testsuite>
 </testsuites>

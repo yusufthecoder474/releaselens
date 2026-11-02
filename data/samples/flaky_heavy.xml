@@ -28,17 +28,17 @@
     <testcase classname="com.example.Tests" name="test_notification_list" time="0.5" />
     <testcase classname="com.example.Tests" name="test_dashboard_widgets" time="0.5" />
     <testcase classname="com.example.Tests" name="test_export_csv" time="0.5" />
-    <testcase classname="com.example.Tests" name="test_flaky_1" time="0.5">
-      <failure message="StaleElementReferenceException: element is not attached to the page">selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: element is not attached to the page document
-  Passed on retry.</failure>
+    <testcase classname="com.example.Tests" name="test_carousel_slide" time="0.5">
+      <failure message="Element detached after carousel refresh, passed on rerun">StaleElementReferenceException: carousel slide element detached after refresh
+  Passed on rerun.</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_flaky_2" time="0.5">
-      <failure message="Timeout: element not visible after 10s wait, passed on retry">selenium.common.exceptions.TimeoutException: Message: element not visible after 10 seconds
-  Passed on retry.</failure>
+    <testcase classname="com.example.Tests" name="test_tooltip_hover" time="0.5">
+      <failure message="Tooltip did not appear within 8s wait, passed on rerun">TimeoutException: tooltip not visible after 8 seconds
+  Passed on rerun.</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_flaky_3" time="0.5">
-      <failure message="Timing sensitive: assertion ran before animation finished">AssertionError: expected animation complete but was still running
-  Passes when sleep is increased; timing dependent.</failure>
+    <testcase classname="com.example.Tests" name="test_spinner_wait" time="0.5">
+      <failure message="Assertion ran while spinner still visible, passes with longer wait">AssertionError: expected spinner hidden but still visible
+  Passes when wait is increased; timing dependent.</failure>
     </testcase>
   </testsuite>
 </testsuites>

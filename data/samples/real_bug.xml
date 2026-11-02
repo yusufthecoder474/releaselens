@@ -21,28 +21,28 @@
     <testcase classname="com.example.Tests" name="test_about_page" time="0.5" />
     <testcase classname="com.example.Tests" name="test_privacy_page" time="0.5" />
     <testcase classname="com.example.Tests" name="test_terms_page" time="0.5" />
-    <testcase classname="com.example.Tests" name="test_login_valid_user" time="0.5">
+    <testcase classname="com.example.Tests" name="test_signin_valid_account" time="0.5">
       <properties>
         <property name="critical" value="true" />
       </properties>
-      <failure message="AssertionError: expected 200 but got 401 for valid credentials">AssertionError: expected &lt;200&gt; but was &lt;401&gt;
-Login failed for valid user alice@example.com</failure>
+      <failure message="Valid account sign-in rejected with 403">AssertionError: expected &lt;200&gt; but was &lt;403&gt;
+Sign-in failed for valid account bob@example.com</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_checkout_total" time="0.5">
+    <testcase classname="com.example.Tests" name="test_basket_amount" time="0.5">
       <properties>
         <property name="critical" value="true" />
       </properties>
-      <failure message="AssertionError: expected 59.99 but got 49.99">AssertionError: expected &lt;59.99&gt; but was &lt;49.99&gt;</failure>
+      <failure message="Basket amount 74.50 expected, 64.50 shown">AssertionError: expected &lt;74.50&gt; but was &lt;64.50&gt;</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_discount_applies" time="0.5">
-      <failure message="AssertionError: expected 10.0 but got 0.0">assert cart.discount == 10.0, got 0.0</failure>
+    <testcase classname="com.example.Tests" name="test_voucher_applies" time="0.5">
+      <failure message="Voucher should reduce total by 15.0, reduction was 0.0">assert basket.voucher_reduction == 15.0, got 0.0</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_modal_open" time="0.5">
-      <failure message="Timeout waiting for modal, succeeded on second attempt">TimeoutException: timed out waiting for modal dialog
+    <testcase classname="com.example.Tests" name="test_dialog_open" time="0.5">
+      <failure message="Dialog appeared only on second try after wait">TimeoutException: timed out waiting for dialog window
   Retry succeeded.</failure>
     </testcase>
-    <testcase classname="com.example.Tests" name="test_import_users" time="0.5">
-      <failure message="FileNotFoundError: fixture users.csv not found">FileNotFoundError: [Errno 2] No such file or directory: 'fixtures/users.csv'</failure>
+    <testcase classname="com.example.Tests" name="test_seed_customers" time="0.5">
+      <failure message="Seed file customers.json missing from fixtures">FileNotFoundError: [Errno 2] No such file or directory: 'fixtures/customers.json'</failure>
     </testcase>
   </testsuite>
 </testsuites>
