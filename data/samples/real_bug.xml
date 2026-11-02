@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites>
+  <testsuite name="real_bug" tests="25" failures="5" errors="0" time="12.5">
+    <testcase classname="com.example.Tests" name="test_login_page_loads" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_search_basic" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_cart_add" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_profile_view" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_homepage_title" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_logout" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_product_list" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_order_history" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_settings_save" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_help_page" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_footer_links" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_pagination" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_sort_results" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_filter_category" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_wishlist_add" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_newsletter_signup" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_contact_form" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_about_page" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_privacy_page" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_terms_page" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_login_valid_user" time="0.5">
+      <properties>
+        <property name="critical" value="true" />
+      </properties>
+      <failure message="AssertionError: expected 200 but got 401 for valid credentials">AssertionError: expected &lt;200&gt; but was &lt;401&gt;
+Login failed for valid user alice@example.com</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_checkout_total" time="0.5">
+      <properties>
+        <property name="critical" value="true" />
+      </properties>
+      <failure message="AssertionError: expected 59.99 but got 49.99">AssertionError: expected &lt;59.99&gt; but was &lt;49.99&gt;</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_discount_applies" time="0.5">
+      <failure message="AssertionError: expected 10.0 but got 0.0">assert cart.discount == 10.0, got 0.0</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_modal_open" time="0.5">
+      <failure message="Timeout waiting for modal, succeeded on second attempt">TimeoutException: timed out waiting for modal dialog
+  Retry succeeded.</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_import_users" time="0.5">
+      <failure message="FileNotFoundError: fixture users.csv not found">FileNotFoundError: [Errno 2] No such file or directory: 'fixtures/users.csv'</failure>
+    </testcase>
+  </testsuite>
+</testsuites>

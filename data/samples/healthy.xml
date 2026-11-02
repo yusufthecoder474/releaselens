@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites>
+  <testsuite name="healthy" tests="20" failures="0" errors="0" time="12.5">
+    <testcase classname="com.example.Tests" name="test_login_page_loads" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_search_basic" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_cart_add" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_profile_view" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_homepage_title" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_logout" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_product_list" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_order_history" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_settings_save" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_help_page" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_footer_links" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_pagination" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_sort_results" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_filter_category" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_wishlist_add" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_newsletter_signup" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_contact_form" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_about_page" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_privacy_page" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_terms_page" time="0.5" />
+  </testsuite>
+</testsuites>

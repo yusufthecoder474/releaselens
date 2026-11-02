@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites>
+  <testsuite name="flaky_heavy" tests="30" failures="3" errors="0" time="12.5">
+    <testcase classname="com.example.Tests" name="test_login_page_loads" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_search_basic" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_cart_add" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_profile_view" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_homepage_title" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_logout" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_product_list" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_order_history" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_settings_save" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_help_page" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_footer_links" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_pagination" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_sort_results" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_filter_category" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_wishlist_add" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_newsletter_signup" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_contact_form" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_about_page" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_privacy_page" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_terms_page" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_sitemap" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_language_switch" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_currency_switch" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_avatar_view" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_notification_list" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_dashboard_widgets" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_export_csv" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_flaky_1" time="0.5">
+      <failure message="StaleElementReferenceException: element is not attached to the page">selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: element is not attached to the page document
+  Passed on retry.</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_flaky_2" time="0.5">
+      <failure message="Timeout: element not visible after 10s wait, passed on retry">selenium.common.exceptions.TimeoutException: Message: element not visible after 10 seconds
+  Passed on retry.</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_flaky_3" time="0.5">
+      <failure message="Timing sensitive: assertion ran before animation finished">AssertionError: expected animation complete but was still running
+  Passes when sleep is increased; timing dependent.</failure>
+    </testcase>
+  </testsuite>
+</testsuites>

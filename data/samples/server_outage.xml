@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites>
+  <testsuite name="server_outage" tests="20" failures="12" errors="0" time="12.5">
+    <testcase classname="com.example.Tests" name="test_login_page_loads" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_search_basic" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_cart_add" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_profile_view" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_homepage_title" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_logout" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_product_list" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_order_history" time="0.5" />
+    <testcase classname="com.example.Tests" name="test_env_1" time="0.5">
+      <failure message="Connection refused: could not connect to database at db.internal:5432">psycopg2.OperationalError: connection to server at "db.internal" (10.0.2.15), port 5432 failed: Connection refused</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_env_2" time="0.5">
+      <failure message="503 Service Unavailable: backend service is down">503 Service Unavailable
+Service temporarily unavailable, maintenance window active</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_env_3" time="0.5">
+      <failure message="Gateway Timeout: server did not respond within 30s (504)">504 Gateway Time-out
+nginx: upstream timed out (110: Connection timed out)</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_env_4" time="0.5">
+      <failure message="DNS resolution failed: Name or service not known for api.internal">socket.gaierror: [Errno -2] Name or service not known</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_env_5" time="0.5">
+      <failure message="Connection refused to api.internal:8080">requests.exceptions.ConnectionError: HTTPConnectionPool(host='api.internal', port=8080): Max retries exceeded: Connection refused</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_env_6" time="0.5">
+      <failure message="500 Internal Server Error from payment gateway">500 Internal Server Error
+Upstream payment service returned 500</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_env_7" time="0.5">
+      <failure message="ReadTimeout: HTTPSConnectionPool read timed out after 10s">requests.exceptions.ReadTimeout: HTTPSConnectionPool(host='partner.example.com', port=443): Read timed out. (read timeout=10)</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_env_8" time="0.5">
+      <failure message="502 Bad Gateway: search service returned invalid response">502 Bad Gateway
+nginx: upstream sent invalid header while reading response</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_env_9" time="0.5">
+      <failure message="Connection refused to redis cache at cache.internal:6379">redis.exceptions.ConnectionError: Error connecting to cache.internal:6379. Connection refused.</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_env_10" time="0.5">
+      <failure message="503 Service Unavailable from notification service">503 Service Unavailable: notification service is down for maintenance</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_env_11" time="0.5">
+      <failure message="Query timeout: database query exceeded 30s limit">psycopg2.errors.QueryCanceled: canceling statement due to statement timeout</failure>
+    </testcase>
+    <testcase classname="com.example.Tests" name="test_env_12" time="0.5">
+      <failure message="Temporary failure in name resolution for db.internal">psycopg2.OperationalError: could not translate host name "db.internal" to address: Temporary failure in name resolution</failure>
+    </testcase>
+  </testsuite>
+</testsuites>
