@@ -35,7 +35,7 @@ easy to explain to non-technical users and limits hallucination risk.
 ## Run it (under 5 commands)
 
 ```bash
-python3 -m venv .venv && .venv/bin/activate
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python scripts/seed_db.py        # optional: the app seeds on first use too
 uvicorn app.main:app --port 8000
@@ -47,29 +47,47 @@ Optional LLM explanations: copy `.env.example` to `.env` and set
 endpoint). With no key, the app works fully in no-key mode: the explain
 node uses a deterministic template instead of the LLM.
 
-Docker (not run in this VM — Docker is not installed here):
+Docker (not run in this VM — see RESULTS.md for the exact blocker:
+the daemon runs but cannot pull images through this environment's
+egress proxy, and `docker compose` is unavailable here):
 
 ```bash
-docker compose up --build   # serves http://localhost:8000
+docker compose up --build   # serves http://localhost:8000 (untested here)
 ```
 
 ## Architecture (LangGraph flow)
 
 ```mermaid
 flowchart LR
-    A[parse\nJUnit XML] --> B[classify\nTF-IDF + LogReg]
+    A[parse\nJUnit XML] --> B[classify\nword+char TF-IDF + LogReg]
     B -->|confidence >= 0.75| D[explain]
     B -->|confidence < 0.75| C[investigate\nmax 3 tool calls]
     C --> D[explain\ntemplate or LLM]
     D --> E[verify\nenum + verbatim evidence]
     E --> F[decide\nrules.yaml]
     F --> G[render\nreport page + SQLite]
+    H[changed files\n(optional)] --> I[tests to run first\nfixed heuristic, no LLM]
+    G -.-> I
 ```
 
 - **parse** (`app/parser.py`): JUnit XML -> test results and failures
   (name, message, log text, critical property).
-- **classify** (`app/classifier.py`): TF-IDF + LogisticRegression over
-  the labeled data; returns category + confidence per failure.
+- **classify** (`app/classifier.py`): word n-grams (1-2) + character
+  n-grams (char_wb 3-5) TF-IDF + LogisticRegression over the labeled
+  data; returns category + confidence per failure. The character
+  features were added after the error analysis (see RESULTS.md).
+- **tests to run first** (`app/selection.py`, wired in `app/main.py`):
+  when changed file paths are submitted with the upload, tests are
+  ranked by name overlap with those files, recent failure rate from
+  SQL, and flaky status. Fixed weights, no LLM. Shown on the report
+  page and in `/api/analyze` JSON.
+- **vector memory** (`app/embeddings.py`, `app/memory.py`): ChromaDB
+  "seen before" references. The active embedding is all-MiniLM-L6-v2
+  (sentence-transformers, model cached per process); TF-IDF is the
+  documented fallback when MiniLM cannot load. On this synthetic
+  data MiniLM measures worse than TF-IDF for retrieval (see
+  RESULTS.md); the memory affects only the "seen before" context,
+  never the verdict.
 - **route**: conditional edge on the lowest confidence (0.75 threshold).
 - **investigate** (`app/agent/tools.py`): LangChain tools
   `search_similar_failures`, `get_test_history`, `get_log_excerpt`.
@@ -110,19 +128,25 @@ flowchart LR
 - 20 historical runs are seeded into SQLite (see `app/seed.py`) so the
   flaky query and re-check ranking have history to work with.
 
-## Embeddings: MiniLM preferred, TF-IDF fallback (this environment)
+## Embeddings: MiniLM active, TF-IDF fallback
 
-The design prefers sentence-transformers all-MiniLM-L6-v2 for ChromaDB.
-In this VM it was not available at evaluation time (first install
-attempt failed with "No space left on device" because pip used the
-small /tmp; a second attempt with `TMPDIR` on the home disk was still
-downloading after ~30 minutes, so the build finished on the fallback —
-see RESULTS.md for the exact attempts), so the app runs with the
-documented fallback: a scikit-learn TF-IDF embedding function fitted on
-the labeled data. The code tries MiniLM first on every start
-(`app/embeddings.py:get_embedding_function`) and falls back
-automatically; the collection name includes the embedding name, so the
-two choices never share a collection.
+The design prefers sentence-transformers all-MiniLM-L6-v2 for ChromaDB,
+and that is what now runs: sentence-transformers 6.2.0 + torch
+2.15.0 were installed into the project venv with `TMPDIR` on the home
+disk (the small /tmp broke the first attempt; the PyTorch CPU index
+timed out through the proxy, so the standard PyPI build is used on
+CPU). The code tries MiniLM first on every start
+(`app/embeddings.py:get_embedding_function`) and falls back to a
+scikit-learn TF-IDF embedding function fitted on the labeled data if
+MiniLM cannot load; the collection name includes the embedding name,
+so the two choices never share a collection. The MiniLM model is
+cached per process (a reload on every pipeline run raised the average
+report time to 2.614s; with the cache it is 1.759s — see RESULTS.md).
+Honest caveat, measured on this synthetic data: MiniLM scores lower
+than TF-IDF for retrieval (B: 0.6722 vs 0.7556 accuracy), so on this
+dataset TF-IDF would be the better retrieval choice; MiniLM stays
+active because it is the required embedding, and the memory affects
+only "seen before" context, never the verdict.
 
 ## Research basis and limits
 

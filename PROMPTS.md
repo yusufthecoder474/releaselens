@@ -32,17 +32,24 @@ What changed, and why:
 
 ## v1 vs v2 comparison
 
-Not evaluated in this environment: comparing prompt versions needs an
-LLM key, and none was supplied, so RESULTS.md records "LLM not
+Not evaluated: comparing prompt versions needs an LLM key, and none
+was available in this session, so RESULTS.md records "LLM not
 evaluated" for the LLM paths, including v1 vs v2. The comparison is
-designed, not run: with a key, run the explain node over the same set
-of failures with `PROMPT_VERSION=v1` and `v2` and compare grounding
-rate (share of evidence lines verbatim in the log) and invalid-category
-rate before the guard.
+implemented but not run: `scripts/llm_evaluate.py` runs method (C)
+once per prompt version on the same GroupKFold folds and the same
+fixed failure set, with outputs cached to `eval_cache/llm_cache.json`
+so a rerun costs no new calls. When a key is available, run
+`python scripts/llm_evaluate.py` and compare, per version: accuracy,
+macro-F1, confusion matrix, grounding rate on RAW evidence lines
+(before the guard), and invalid-category rate before the guard. Do
+not claim v2 is better until those numbers exist: v2's few-shot
+examples and cite-only-lines instruction are designed to help
+grounding, but on this data that is a hypothesis, not a result.
 
 ## No-key mode
 
 With no `LLM_API_KEY`, neither prompt file is used: the explain node
 uses a deterministic template built from the classifier result and the
 nearest past failure. Its evidence lines are copied from the log, so
-grounding is exact by construction (measured 29/29 on the samples).
+grounding is exact by construction (measured 29/29 on the current,
+held-out samples).
