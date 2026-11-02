@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReleaseLens report — {{ report.verdict }}</title>
+<style>
+body { font-family: system-ui, sans-serif; max-width: 820px; margin: 2rem auto; padding: 0 1rem; color: #222; }
+.banner { border-radius: 12px; padding: 1.5rem; color: white; }
+.banner.GREEN { background: #1e8e3e; }
+.banner.YELLOW { background: #b7791f; }
+.banner.RED { background: #b00020; }
+.banner h1 { margin: 0; font-size: 2.2rem; }
+.group { border: 1px solid #ddd; border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; }
+code { background: #f2f2f2; padding: 0.1rem 0.3rem; border-radius: 4px; }
+.muted { color: #666; }
+.evidence { background: #f7f7f7; border-left: 4px solid #999; padding: 0.5rem 0.75rem; white-space: pre-wrap; font-family: monospace; font-size: 0.9rem; }
+a { color: #1a5cff; }
+</style>
+</head>
+<body>
+<div class="banner {{ report.verdict }}">
+<h1>{{ report.verdict }}</h1>
+<p>{{ report.what_it_means }}</p>
+</div>
+<p><strong>{{ report.passed }}</strong> passed, <strong>{{ report.failed }}</strong> failed, <strong>{{ report.skipped }}</strong> skipped, out of <strong>{{ report.total }}</strong> tests. Pass rate: <strong>{{ report.pass_rate }}%</strong>.</p>
+<p class="muted">Rule that decided this: {{ report.rule_description }} ({{ report.rule_key }}). Confidence: {{ report.confidence_label }}. {% if report.unverified_evidence_count %}Note: {{ report.unverified_evidence_count }} evidence line(s) could not be verified against the log and were removed.{% endif %}</p>
+
+<h2>Failures by reason</h2>
+{% if report.groups %}
+{% for g in report.groups %}
+<div class="group">
+<h3>{{ g.label }} — {{ g.count }} failure(s)</h3>
+{% for item in g.entries %}
+<p><strong>{{ item.test_name }}</strong>: {{ item.plain_english_reason }}</p>
+{% if item.evidence_lines %}
+<div class="evidence">{% for line in item.evidence_lines %}{{ line }}
+{% endfor %}</div>
+{% endif %}
+<p>Next step: {{ item.suggested_next_step }}</p>
+{% if item.nearest %}<p class="muted">Seen before: {{ item.nearest.test_name }} ({{ item.nearest.category }}).</p>{% endif %}
+{% endfor %}
+</div>
+{% endfor %}
+{% else %}
+<p>No failures. Nothing to explain.</p>
+{% endif %}
+
+<h2>Tests to re-check first</h2>
+{% if report.recheck_first %}
+<ol>
+{% for t in report.recheck_first %}
+<li><code>{{ t.test_name }}</code> — failed {{ t.failures }} of {{ t.appearances }} recent runs ({{ (t.failure_rate * 100) | round(1) }}%)</li>
+{% endfor %}
+</ol>
+{% else %}
+<p>No test has failed recently.</p>
+{% endif %}
+
+{% if report.flaky_tests %}
+<h2>Flaky tests (passed and failed recently)</h2>
+<ul>
+{% for t in report.flaky_tests %}<li><code>{{ t }}</code></li>{% endfor %}
+</ul>
+{% endif %}
+
+<p><strong>A person should confirm this verdict before release.</strong> ReleaseLens explains test output; it does not replace human judgement.</p>
+
+<h2>Glossary</h2>
+<ul>
+<li><strong>Verdict</strong> — GREEN means ready by the rules, YELLOW means look again, RED means do not release yet.</li>
+<li><strong>Pass rate</strong> — passed tests divided by passed plus failed tests, as a percentage. Skipped tests are not counted.</li>
+<li><strong>Flaky test</strong> — a test that passes sometimes and fails sometimes without any code change.</li>
+<li><strong>Seen before</strong> — a similar past failure from the vector memory, shown for context only.</li>
+<li><strong>Confidence</strong> — how sure the classifier was, from High to Low. Low confidence sends the failure to investigation first.</li>
+</ul>
+<p><a href="/">Analyse another file</a></p>
+</body>
+</html>

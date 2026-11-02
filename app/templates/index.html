@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReleaseLens — Can we release?</title>
+<style>
+body { font-family: system-ui, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; color: #222; }
+h1 { font-size: 2rem; }
+.card { border: 1px solid #ddd; border-radius: 12px; padding: 1.5rem; }
+label { display: block; margin: 1rem 0 0.25rem; font-weight: 600; }
+button { margin-top: 1rem; padding: 0.6rem 1.2rem; font-size: 1rem; border-radius: 8px; border: none; background: #1a5cff; color: white; cursor: pointer; }
+button.secondary { background: #eee; color: #222; }
+.error { color: #b00020; font-weight: 600; }
+.muted { color: #666; }
+</style>
+</head>
+<body>
+<h1>ReleaseLens</h1>
+<p>Upload a JUnit XML file and get a plain-English answer to <strong>“can we release?”</strong> — a GREEN / YELLOW / RED verdict, failures grouped by reason, and the tests to re-check first.</p>
+<p class="muted">No account, no chat. The report is one page, written for managers and product owners as well as engineers.</p>
+<div class="card">
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+<form action="/report" method="post" enctype="multipart/form-data">
+<label for="file">JUnit XML file</label>
+<input type="file" id="file" name="file" accept=".xml">
+<label for="sample">Or try a sample</label>
+<select id="sample" name="sample">
+<option value="">— choose a sample —</option>
+{% for s in samples %}<option value="{{ s }}">{{ s }}</option>{% endfor %}
+</select>
+<div>
+<button type="submit">Get the report</button>
+</div>
+</form>
+<form action="/report" method="post">
+<input type="hidden" name="sample" value="real_bug">
+<button type="submit" class="secondary">Try with a sample</button>
+</form>
+<p class="muted">“Try with a sample” analyses the real-bug sample: 25 tests with a critical login bug. A person should still confirm the verdict before release.</p>
+</div>
+</body>
+</html>
