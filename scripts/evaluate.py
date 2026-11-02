@@ -2,9 +2,12 @@
     python scripts/evaluate.py
 
 (A) Classifier, GroupKFold by template_family, with two embeddings:
-    TF-IDF + LogisticRegression (baseline) and MiniLM embeddings +
-    LogisticRegression. Same folds for both (deterministic GroupKFold
+    the shipped classifier pipeline (word n-grams + char n-grams,
+    see app/classifier.py) + LogisticRegression, and MiniLM embeddings
+    + LogisticRegression. Same folds for both (deterministic GroupKFold
     on the same row order), so the side-by-side comparison is fair.
+    The original word-only TF-IDF baseline (0.7611/0.7559) is kept in
+    RESULTS.md and in scripts/error_analysis.py for before/after.
 (B) Retrieval-only kNN over Chroma (top-5 majority vote), same folds,
     with TF-IDF vectors and (when available) MiniLM vectors.
 (C)/(D) LLM paths: only if LLM_API_KEY is set, else 'LLM not evaluated'.
@@ -31,7 +34,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 from sklearn.model_selection import GroupKFold
-from sklearn.pipeline import Pipeline
+from sklearn.pipeline import FeatureUnion, Pipeline
 
 from app.categories import ALL_CATEGORIES
 from app.classifier import failure_text, load_labeled_rows
@@ -61,9 +64,10 @@ def _score(y_true: list[str], y_pred: list[str]):
 
 
 def evaluate_sklearn(rows, groups, n_splits=5, embedding: str = "tfidf"):
-    """(A) GroupKFold classifier. embedding='tfidf' uses the TF-IDF +
-    LogisticRegression pipeline; embedding='minilm' uses MiniLM vectors
-    + LogisticRegression. Returns (accuracy, macro_f1, confusion, y_true, y_pred)."""
+    """(A) GroupKFold classifier. embedding='tfidf' uses the shipped
+    classifier pipeline (word + char n-grams) + LogisticRegression;
+    embedding='minilm' uses MiniLM vectors + LogisticRegression.
+    Returns (accuracy, macro_f1, confusion, y_true, y_pred)."""
     texts = [failure_text(r["test_name"], r["message"], r["log"]) for r in rows]
     labels = [r["category"] for r in rows]
     gkf = GroupKFold(n_splits=n_splits)
@@ -78,7 +82,10 @@ def evaluate_sklearn(rows, groups, n_splits=5, embedding: str = "tfidf"):
             preds = [str(p) for p in clf.predict([all_vectors[i] for i in test_idx])]
         else:
             pipe = Pipeline([
-                ("tfidf", TfidfVectorizer(ngram_range=(1, 2), min_df=1)),
+                ("features", FeatureUnion([
+                    ("word", TfidfVectorizer(ngram_range=(1, 2), min_df=1)),
+                    ("char", TfidfVectorizer(analyzer="char_wb", ngram_range=(3, 5), min_df=1)),
+                ])),
                 ("clf", LogisticRegression(max_iter=1000)),
             ])
             pipe.fit([texts[i] for i in train_idx], [labels[i] for i in train_idx])
