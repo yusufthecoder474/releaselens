@@ -55,6 +55,65 @@ egress proxy, and `docker compose` is unavailable here):
 docker compose up --build   # serves http://localhost:8000 (untested here)
 ```
 
+## Screenshots — verified Windows demo (2 November 2026)
+
+These are **actual screenshots from the local ReleaseLens demonstration** on Windows 11, not generated mockups. The example JUnit data and historical runs are **synthetic**. Verdicts apply to the supplied sample runs only and do not certify any real release. The screenshots show the local FastAPI app running on port 8001; use your own available port when running it.
+
+### 1. GREEN — release appears ready
+
+![GREEN release report: 20 passed, 0 failed](docs/screenshots/01-green-release-ready.png)
+
+**What is shown:** 20 passed / 0 failed, 100% pass rate, GREEN verdict (`all_clear`). No current-run failures are reported. The re-check list below still shows risk from **previous runs**, which is not a contradiction: the verdict concerns the uploaded run, while the ranking uses run history.
+
+### 2. YELLOW — flaky tests need review
+
+![YELLOW release report: 27 passed, 3 failed](docs/screenshots/02-yellow-flaky-tests.png)
+
+**What is shown:** 27 passed / 3 failed, 90% pass rate, YELLOW verdict (`only_flaky_or_environment`). Three timing or flakiness-related failures are grouped together, with verbatim log evidence, suggested re-runs, and similar past tests. This outcome calls for a human review, not automatic approval.
+
+### 3. RED — critical product bug blocks release
+
+![RED release report: 20 passed, 5 failed](docs/screenshots/03-red-critical-bug.png)
+
+**What is shown:** 20 passed / 5 failed, 80% pass rate, RED verdict (`critical_real_bug`). Failures include a sign-in 403 error, basket amount mismatch, and a voucher defect, with accompanying log evidence and nearest similar historical failures. The low pass rate is another reason to block the sample release.
+
+### 4. RED report — historical risk and test selection
+
+![RED report: test re-check ranking, flaky history and glossary](docs/screenshots/04-red-history-and-recheck.png)
+
+**What is shown:** the ranked **tests to re-check first**, recent failure counts and percentages, history-based flaky-test list, explicit human-confirmation notice, and a glossary for non-technical readers. The ranking relies on stored synthetic history; it is not a forecast validated on production data.
+
+### 5. FastAPI REST API documentation
+
+![FastAPI OpenAPI documentation: six routes](docs/screenshots/05-fastapi-swagger.png)
+
+**What is shown:** `/`, `/report`, `/api/analyze`, `/api/runs`, `/api/tests/{name}/history`, and `/health` in the automatically generated Swagger/OpenAPI interface.
+
+### 6. Health-check endpoint
+
+![Health endpoint returns status ok](docs/screenshots/06-health-check.png)
+
+**What is shown:** local GET `/health` returns `{"status":"ok"}`.
+
+### 7. Windows automated-test evidence
+
+![Windows pytest output: 41 passed, 8 warnings](docs/screenshots/07-windows-41-tests-passed.png)
+
+**What is shown:** after installing `sentence-transformers`, the Windows environment completed **41 tests passed, 0 failed, 0 skipped, 8 ChromaDB deprecation warnings in 53.00 seconds**. The same screenshot includes a later port 8001 collision, which happened because an earlier server was already listening; the app was then run on port 8002. These are test-suite counts, not classification accuracy or LLM evaluation results.
+
+### Run on Windows PowerShell
+
+```powershell
+cd "D:\Downloads\releaselens-20261102-1523"
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install sentence-transformers
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8002
+```
+
+The `sentence-transformers` dependency may download PyTorch and model weights. If port 8002 is busy, use another free port. No LLM API key is needed for the deterministic explanation mode.
+
 ## Architecture (LangGraph flow)
 
 ```mermaid

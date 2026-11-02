@@ -371,3 +371,15 @@ Running `uvicorn app.main:app` and calling the real endpoints:
 - LLM methods (C), full agent (D), prompt v1 vs v2: **LLM not
   evaluated** (no key; see above).
 - Load testing beyond the 4 samples: **not run**.
+
+
+## Additional local Windows validation — 2 November 2026
+
+Evidence: `docs/screenshots/07-windows-41-tests-passed.png` (captured from the user-run Windows 11 PowerShell session).
+
+- Command: `.\.venv\Scripts\python.exe -m pytest -q -rs`
+- After installing `sentence-transformers`: **41 passed, 0 failed, 0 skipped, 8 warnings, 53.00 s**.
+- Prior to optional model-package installation: **40 passed, 1 skipped** (test embedding dependency unavailable).
+- Warnings: ChromaDB `DeprecationWarning` for legacy embedding-function config; tests did not fail.
+- Local FastAPI server: `/health` returned `{"status":"ok"}`, Swagger `/docs` displayed six routes, and GREEN / YELLOW / RED sample HTML report pages were visually inspected.
+- This additional check does **not** constitute a rerun of GroupKFold model evaluations or live LLM evaluation. All synthetic-data and no-production-validation qualifications remain.
