@@ -46,6 +46,28 @@ def test_api_analyze_json():
     assert body["groups"]
 
 
+def test_api_analyze_with_changed_files():
+    resp = client.post("/api/analyze",
+                       data={"sample": "real_bug", "changed_files": "src/basket.py"})
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["verdict"] == "RED"
+    assert body["changed_files"] == ["src/basket.py"]
+    ranked = body["tests_to_run_first"]
+    assert ranked
+    # The basket test overlaps the changed file, so it ranks first.
+    assert ranked[0]["test_name"] == "test_basket_amount"
+    assert ranked[0]["overlap"] == 1
+
+
+def test_api_analyze_without_changed_files_has_empty_ranking():
+    resp = client.post("/api/analyze", data={"sample": "healthy"})
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["tests_to_run_first"] == []
+    assert body["changed_files"] == []
+
+
 def test_api_runs_and_history():
     resp = client.get("/api/runs")
     assert resp.status_code == 200
