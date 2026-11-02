@@ -7,3 +7,4 @@ chroma_db/
 .env
 .DS_Store
 .pytest_cache/
+eval_cache/

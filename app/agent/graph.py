@@ -385,10 +385,14 @@ def _make_llm():
                       api_key=key, temperature=0)
 
 
-def run_pipeline(xml_text: str, source: str = "upload", session=None) -> dict:
+def run_pipeline(xml_text: str, source: str = "upload", session=None,
+                 llm_client=None) -> dict:
     """Run the full agent pipeline on one JUnit XML document.
 
     Returns the report dict. Works with no LLM key (template explain).
+    llm_client, when given, is used instead of building one from the
+    environment (this is the seam the LLM evaluation and its fake-LLM
+    tests use); pass None (default) for the normal env-based client.
     """
     own_session = session is None
     if session is None:
@@ -399,8 +403,9 @@ def run_pipeline(xml_text: str, source: str = "upload", session=None) -> dict:
         _client, collection, _emb = get_collection()
         rules = load_rules()
         prompt_ver = prompt_version()
+        llm = llm_client if llm_client is not None else _make_llm()
         ctx = Ctx(collection, session, rules, load_prompt(prompt_ver),
-                  prompt_ver, _make_llm())
+                  prompt_ver, llm)
         graph = build_graph(ctx)
         result = graph.invoke({"xml_text": xml_text, "source": source})
         return result["report"]
