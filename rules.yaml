@@ -1,0 +1,22 @@
+# ReleaseLens release rules (editable). The LLM never decides the verdict:
+# these deterministic rules do. First matching rule wins; the report shows
+# which rule fired.
+#
+# RED:
+#   - any Real-product-bug failure in a test tagged critical
+#   - pass rate below 90%
+# YELLOW:
+#   - only flaky/environment failures (no other failure kinds)
+#   - pass rate from 90% up to (not including) 97%
+# GREEN: otherwise.
+red_pass_rate_below: 90
+yellow_pass_rate_low: 90
+yellow_pass_rate_high: 97
+# A test is critical if its JUnit testcase carries
+# <property name="critical" value="true"/> OR its name contains one of
+# these keywords (case-insensitive).
+critical_keywords:
+  - login
+  - payment
+  - checkout
+  - auth
