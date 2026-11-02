@@ -1,0 +1,13 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      # LLM_API_KEY: ""   # optional; the app works with no key
+      PROMPT_VERSION: "v2"
+    volumes:
+      - releaselens_data:/app/data_runtime
+
+volumes:
+  releaselens_data:
